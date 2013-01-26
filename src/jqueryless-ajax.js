@@ -11,7 +11,7 @@ if (!window.$) window.$ = {};
 				xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			}
 			for (var key in data) {
-				formData.push(key, data[key]);
+				formData.push(key + '=' + data[key]);
 			}
 		}
 		return formData.join("&");
@@ -33,15 +33,17 @@ if (!window.$) window.$ = {};
 
 		var xhr = new XMLHttpRequest();
 		xhr.open(method, url);
-		if (dataType)
+		if (dataType && dataType != 'json')
 		{
 			xhr.responseType = dataType;
 		}
 		if (success)
 		{
 			xhr.onload = function () {
-				if (dataType)
+				if (dataType && dataType != 'json')
 					success(this.response, this.statusText, this);
+				else if (dataType == 'json')
+					success(JSON.parse(this.response), this.statusText, this);
 				else
 					success(this.responseXML || this.responseBody || this.responseText || this.response, this.statusText, this);
 			}
